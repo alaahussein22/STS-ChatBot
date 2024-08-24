@@ -6,7 +6,7 @@
       :class="['message-container', message.sender === 'me' ? 'me' : 'other']"
       class="flex items-center"
     >
-      <img :src="message.image" class="sender-image" />
+      <img :src="message.image || defaultImage" class="sender-image" />
       <div
         :class="['message', message.sender === 'other' ? 'bg-gray' : 'bg-red']"
         class="flex flex-col"
@@ -22,35 +22,20 @@
         class="absolute top-1/2 left-3 transform -translate-y-1/2 cursor-pointer"
         @click="toggleDropdown"
       >
-        <svg
-          class="w-6 h-6 text-gray-600"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <!-- File Outline -->
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M7 2H5a2 2 0 00-2 2v16a2 2 0 002 2h14a2 2 0 002-2V9l-6-6z"
-          />
-          <!-- Arrow Inside (Pin Shape) -->
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 15l-3-3m3 3l3-3M12 6v9"
-          />
-          <!-- Pin Shape Detail -->
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 18v3m-1-1h2M12 20a2 2 0 01-2-2v-1a2 2 0 012-2a2 2 0 012 2v1a2 2 0 01-2 2z"
-          />
-        </svg>
+      <svg fill="#000000" height="1.5rem" width="1.5rem" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 512 512" xml:space="preserve">
+<g>
+	<g>
+		<path d="M467.076,68.86c-59.902-59.902-156.846-59.896-216.741,0L34.919,284.276c-46.558,46.557-46.558,122.312,0,168.87
+			c46.57,46.571,122.326,46.544,168.87,0L419.205,237.73c33.36-33.36,33.36-87.64,0-121c-33.359-33.361-87.64-33.361-121,0
+			L114.478,300.457c-6.975,6.975-6.975,18.285,0,25.259c6.975,6.975,18.285,6.975,25.259,0l183.727-183.727
+			c19.432-19.432,51.05-19.432,70.481,0c19.431,19.432,19.431,51.05,0,70.481L178.53,427.887c-32.71,32.71-85.646,32.706-118.352,0
+			c-15.806-15.806-24.511-36.821-24.511-59.175s8.706-43.369,24.511-59.176L275.594,94.119c45.94-45.94,120.287-45.934,166.222,0
+			c45.827,45.828,45.827,120.395,0,166.222l-95.741,95.741c-6.975,6.975-6.975,18.284,0,25.259s18.285,6.975,25.259,0l95.741-95.741
+			C526.978,225.7,526.971,128.754,467.076,68.86z"/>
+	</g>
+</g>
+</svg>
       </div>
       <div
         class="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
@@ -80,7 +65,7 @@
       <!-- Dropdown List -->
       <div
         v-if="showDropdown"
-        class="absolute left-0 top-full mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg"
+        class="absolute left-0 bottom-full mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg"
       >
         <div
           class="py-2 px-4 cursor-pointer hover:bg-gray-100 flex gap-2 items-center"
@@ -143,10 +128,8 @@
 </template>
 
 <script setup lang="ts">
-// import AppInput from "@/components/Form/AppInput.vue";
 import { ref, onUnmounted } from "vue";
-// import inlineSvg from "vue-inline-svg";
-// import { useSvg } from "@/composables/useDynamicAssets";
+import defaultImage from '@/assets/images/logo.png';
 
 const messages = ref([
   {
@@ -158,7 +141,7 @@ const messages = ref([
   {
     text: "Hi there!",
     sender: "other",
-    image: "https://via.placeholder.com/40?text=M",
+    image: "",
   },
   {
     text: "How are you?",
@@ -169,7 +152,7 @@ const messages = ref([
   {
     text: "I am good, thanks!",
     sender: "other",
-    image: "https://via.placeholder.com/40?text=M",
+    image: "",
   },
 ]);
 
@@ -260,7 +243,6 @@ onUnmounted(() => {
   border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
-  opacity: 0.6;
   color: black;
 }
 

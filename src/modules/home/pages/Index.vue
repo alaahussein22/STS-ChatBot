@@ -117,14 +117,8 @@ const cards = {
 
 <style scoped lang="scss">
 .parent {
-  background: linear-gradient(
-    to left,
-    #fcc4c4 0%,
-    #fcc4c4 50%,
-    #f4f4f7 10%,
-    #f4f4f7 20%
-  );
-  background-size: 10% 100%;
+
+  background:#fff;
 }
 ::v-deep .search .p-inputtext {
   font-size: 1rem;

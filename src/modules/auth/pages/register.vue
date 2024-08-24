@@ -109,6 +109,8 @@ const submitForm = () => {
   border-bottom: 2px solid #aaaaaa;
   border-radius: 0;
   margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+
 }
 
 ::v-deep .chat .p-inputtext.p-invalid {
