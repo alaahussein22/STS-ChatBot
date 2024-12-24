@@ -22,23 +22,36 @@
         class="absolute top-1/2 left-3 transform -translate-y-1/2 cursor-pointer"
         @click="toggleDropdown"
       >
-      <svg fill="#000000" height="1.5rem" width="1.5rem" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 viewBox="0 0 512 512" xml:space="preserve">
-<g>
-	<g>
-		<path d="M467.076,68.86c-59.902-59.902-156.846-59.896-216.741,0L34.919,284.276c-46.558,46.557-46.558,122.312,0,168.87
+        <svg
+          fill="#000000"
+          height="1.5rem"
+          width="1.5rem"
+          version="1.1"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 512 512"
+          xml:space="preserve"
+        >
+          <g>
+            <g>
+              <path
+                d="M467.076,68.86c-59.902-59.902-156.846-59.896-216.741,0L34.919,284.276c-46.558,46.557-46.558,122.312,0,168.87
 			c46.57,46.571,122.326,46.544,168.87,0L419.205,237.73c33.36-33.36,33.36-87.64,0-121c-33.359-33.361-87.64-33.361-121,0
 			L114.478,300.457c-6.975,6.975-6.975,18.285,0,25.259c6.975,6.975,18.285,6.975,25.259,0l183.727-183.727
 			c19.432-19.432,51.05-19.432,70.481,0c19.431,19.432,19.431,51.05,0,70.481L178.53,427.887c-32.71,32.71-85.646,32.706-118.352,0
 			c-15.806-15.806-24.511-36.821-24.511-59.175s8.706-43.369,24.511-59.176L275.594,94.119c45.94-45.94,120.287-45.934,166.222,0
 			c45.827,45.828,45.827,120.395,0,166.222l-95.741,95.741c-6.975,6.975-6.975,18.284,0,25.259s18.285,6.975,25.259,0l95.741-95.741
-			C526.978,225.7,526.971,128.754,467.076,68.86z"/>
-	</g>
-</g>
-</svg>
+			C526.978,225.7,526.971,128.754,467.076,68.86z"
+              />
+            </g>
+          </g>
+        </svg>
       </div>
       <div
-        class="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
+        class="absolute top-1/2 right-8 transform -translate-y-1/2 cursor-pointer"
+        @click="playText"
+        :disabled="!transcript"
       >
         <svg
           class="w-6 h-6 text-gray-600"
@@ -55,13 +68,107 @@
           ></path>
         </svg>
       </div>
+      <div
+        v-if="!isListening"
+        class="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
+        @click="startListening"
+        :disabled="isListening"
+      >
+        <svg
+          class="w-6 h-6 text-success-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- Microphone body -->
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 1v10a3 3 0 01-6 0V4a3 3 0 016 0v7a3 3 0 01-6 0"
+          />
+          <!-- Microphone base -->
+          <line
+            x1="12"
+            y1="15"
+            x2="12"
+            y2="19"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          />
+          <!-- Base stand -->
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 19h8"
+          />
+        </svg>
+      </div>
+
+      <div
+        v-if="isListening"
+        class="absolute top-1/2 right-3 transform -translate-y-1/2 cursor-pointer"
+        @click="stopListening"
+        :disabled="!isListening"
+      >
+        <svg
+          class="w-6 h-6 text-red-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <!-- Outer Pulsating Circle -->
+          <circle
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-opacity="0.5"
+            fill="none"
+            stroke-width="2"
+          >
+            <animate
+              attributeName="r"
+              from="10"
+              to="12"
+              dur="1s"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="opacity"
+              from="0.5"
+              to="0"
+              dur="1s"
+              repeatCount="indefinite"
+            />
+          </circle>
+
+          <!-- Static Red Circle -->
+          <circle cx="12" cy="12" r="6" fill="currentColor"></circle>
+
+          <!-- Microphone Icon -->
+          <path
+            d="M9 10v2a3 3 0 006 0v-2M12 16v2M8 18h8"
+            stroke="white"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
       <!-- Input Field -->
       <input
         type="text"
         class="w-full py-4 px-12 border rounded-lg bg-[#a9a9a9]"
-        placeholder="Message STS Chat bot Here"
+        :placeholder="
+          isListening ? 'Recording...' : 'Type Message STS Chat bot Here'
+        "
+        v-model="content"
       />
-
       <!-- Dropdown List -->
       <div
         v-if="showDropdown"
@@ -127,9 +234,9 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onUnmounted } from "vue";
-import defaultImage from '@/assets/images/logo.png';
+<script setup>
+import { ref, onUnmounted, defineEmits, watch, computed } from "vue";
+import defaultImage from "@/assets/images/logo.png";
 
 const messages = ref([
   {
@@ -157,13 +264,89 @@ const messages = ref([
 ]);
 
 const showDropdown = ref(false);
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: "",
+  },
+});
 
+// Reactive states
+const transcript = ref(""); // Stores the transcribed text
+const isListening = ref(false); // Indicates whether recording is active
+let recognition = null; // SpeechRecognition object
+
+// Initialize SpeechRecognition
+const initializeRecognition = () => {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert("Your browser does not support the Speech Recognition API.");
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.continuous = true; // Keep listening until stopped
+  recognition.interimResults = true; // Capture partial (interim) results
+  recognition.lang = "en-US"; // Set language to English
+
+  // Handle speech recognition results
+  recognition.onresult = (event) => {
+    const interimTranscript = Array.from(event.results)
+      .map((result) => result[0].transcript)
+      .join("");
+    transcript.value = interimTranscript; // Update the transcript in real-time
+  };
+
+  // Handle recognition errors
+  recognition.onerror = (event) => {
+    console.error("Speech Recognition Error:", event.error);
+  };
+
+  // Handle recognition end
+  recognition.onend = () => {
+    isListening.value = false;
+  };
+};
+
+// Start listening
+const startListening = () => {
+  if (!recognition) initializeRecognition();
+  isListening.value = true;
+  transcript.value = "";
+  recognition?.start();
+};
+
+// Stop listening
+const stopListening = () => {
+  recognition?.stop();
+  isListening.value = false;
+};
+
+const playText = () => {
+  if (!transcript.value) return;
+
+  const speech = new SpeechSynthesisUtterance(transcript.value);
+  speech.lang = "en-US";
+  speech.rate = 1;
+  speech.pitch = 1;
+  window.speechSynthesis.speak(speech);
+};
+const emit = defineEmits();
+
+const content = computed(() => props.modelValue || transcript.value);
+
+// Watch for changes to content and emit updates to the parent
+watch(content, (newValue) => {
+  emit("update:modelValue", newValue);
+});
 function toggleDropdown() {
   showDropdown.value = !showDropdown.value;
 }
 
 // Handle click outside to close dropdown
-function handleClickOutside(event:any) {
+function handleClickOutside(event) {
   if (!event.target.closest(".relative")) {
     showDropdown.value = false;
   }
@@ -172,7 +355,7 @@ function handleClickOutside(event:any) {
 // Add and remove event listener for clicks outside
 document.addEventListener("click", handleClickOutside);
 
-function selectOption(option:any) {
+function selectOption(option) {
   console.log("Selected:", option);
   showDropdown.value = false;
 }

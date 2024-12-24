@@ -2,11 +2,11 @@
 import AppInput from "@/components/Form/AppInput.vue";
 import Profile from "@/layouts/dashboard/components/Profile.vue";
 import Chat from "@/modules/home/pages/chat.vue";
+import { ref } from "vue";
 
 const cards = {
   today: [
     { text: "Chat2", time: "23:11" },
-    { text: "Chat3", time: "23:11" },
   ],
   yesterday: [
     { text: "Chat4", time: "23:11" },
@@ -20,16 +20,43 @@ const cards = {
     { text: "Chat10", time: "10:33" },
   ],
 };
+const isCollapsed = ref(false);
+const toggleCollapse = () => {
+  isCollapsed.value = !isCollapsed.value;
+};
+
+const parentContent = ref("");
 </script>
 
 <template>
   <div class="flex flex-row gap-10 parent pb-5">
-    <div class="bg-[#F6F4FE] py-2 basis-1/5 ">
+    <div
+      :class="[
+        'bg-[#F6F4FE] py-2',
+        {
+          'basis-1/5': !isCollapsed,
+          'w-0': isCollapsed,
+          'overflow-hidden': isCollapsed,
+        },
+      ]"
+      class="transition-all duration-300"
+    >
       <!-- heading -->
       <div class="px-5">
-        <span class="flex items-center gap-2">
-          <img src="@/assets/images/logo.png" />
-          <p class="text-[#25282B] text-2xl font-semibold">STS Chat Bot</p>
+        <span class="flex justify-between items-center">
+          <div class="flex items-center">
+            <img src="@/assets/images/logo.png" />
+            <p class="text-[#25282B] text-2xl font-semibold">STS Chat Bot</p>
+          </div>
+          <!-- Collapse Button -->
+          <button @click="toggleCollapse" class="text-[#25282B]">
+            <span v-if="isCollapsed">
+              <img src="@/assets/images/logo.png" width="20" height="20" />
+            </span>
+            <span v-else>
+              <img src="@/assets/icons/minus.svg" width="20" height="20" />
+            </span>
+          </button>
         </span>
         <!-- content -->
         <AppInput
@@ -52,7 +79,9 @@ const cards = {
             :key="'today-' + index"
             :class="{ 'first-card': index === 0 }"
           >
-            <div class="card-text">{{ card.text }}</div>
+            <div class="card-text">
+              {{ parentContent ? parentContent.substring(0, 20) : card.text }}
+            </div>
             <div class="card-time">{{ card.time }}</div>
           </div>
         </div>
@@ -84,7 +113,7 @@ const cards = {
           <div
             class="card rounded-md cursor-pointer"
             v-for="(card, index) in cards.lastDays"
-            :key="'yesterday-' + index"
+            :key="'lastdays-' + index"
           >
             <div class="card-text">{{ card.text }}</div>
             <div class="card-time">{{ card.time }}</div>
@@ -93,8 +122,18 @@ const cards = {
       </div>
     </div>
 
-    <div class="basis-3/4 py-5">
+    <!-- Main Content Area -->
+    <div :class="['basis-3/4 py-5', { 'w-full basis-11/12': isCollapsed }]">
       <!-- profile -->
+      <span v-if="isCollapsed">
+        <img
+          src="@/assets/images/logo.png"
+          width="30"
+          height="30"
+          class="cursor-pointer"
+          @click="toggleCollapse"
+        />
+      </span>
       <div class="flex justify-end">
         <Profile />
       </div>
@@ -109,7 +148,7 @@ const cards = {
       </div>
 
       <div>
-        <Chat />
+        <Chat v-model="parentContent" />
       </div>
     </div>
   </div>
@@ -117,8 +156,7 @@ const cards = {
 
 <style scoped lang="scss">
 .parent {
-
-  background:#fff;
+  background: #fff;
 }
 ::v-deep .search .p-inputtext {
   font-size: 1rem;
